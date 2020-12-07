@@ -18,6 +18,8 @@ export const store = createStore(
     window.devToolsExtension && window.devToolsExtension()
 );
 
+export type ActionType = "TodoAdd";
+
 export class Action {
     constructor(
         public type: ActionType,
@@ -25,13 +27,9 @@ export class Action {
     ) { }
 };
 
-export enum ActionType {
-    TodoAdd = 0,
-}
-
 function reducer(state = initialState, { type, payload }: Action) {
     switch(type) {
-        case ActionType.TodoAdd:
+        case "TodoAdd":
             return {
                 ...state,
                 todos: [...state.todos, payload],
