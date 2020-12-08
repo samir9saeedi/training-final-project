@@ -47,6 +47,11 @@ function Todos() {
         dispatch(action);
     }
 
+    function handleCheck(id: string) {
+        const action = { ...new Action("TodoDone", id) };
+        dispatch(action);
+    }
+
     const now = new Date();
     switch (range) {
         case "day":
@@ -148,7 +153,7 @@ function Todos() {
                         <tr className="font-bold" key={o.id}>
                             {done === "to-do" && (
                                 <td>
-                                    <input type="checkbox" />
+                                    <input type="checkbox" onChange={() => handleCheck(o.id)} />
                                 </td>
                             )}
                             <td className="py-8">{o.title}</td>
