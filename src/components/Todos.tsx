@@ -31,6 +31,7 @@ function getTime(date: Date) {
 
 function Todos() {
     let todos = useSelector((state: State) => state.todos);
+    let titleSortDir = useSelector((state: State) => state.titleSortDir);
     const dispatch = useDispatch();
     const { done, range } = useParams<{
         done: "to-do" | "done-tasks";
@@ -49,6 +50,11 @@ function Todos() {
 
     function handleCheck(id: string) {
         const action = { ...new Action("TodoDone", id) };
+        dispatch(action);
+    }
+
+    function handleTitleSort() {
+        const action = { ...new Action("ToggleTitleSortDir") };
         dispatch(action);
     }
 
@@ -141,7 +147,14 @@ function Todos() {
                 <thead className="text-left text-gray-500">
                     <tr className="border-t border-b">
                         {done === "to-do" && <th>&nbsp;</th>}
-                        <th className="py-4">Tasks</th>
+                        <th className="py-4">
+                            <button
+                                className="font-bold"
+                                onClick={handleTitleSort}
+                            >
+                                Tasks
+                            </button>
+                        </th>
                         <th>Status</th>
                         <th>Date</th>
                         <th>Time</th>
@@ -149,61 +162,80 @@ function Todos() {
                     </tr>
                 </thead>
                 <tbody>
-                    {todos.map((o) => (
-                        <tr className="font-bold" key={o.id}>
-                            {done === "to-do" && (
+                    {todos
+                        .sort(function (a, b) {
+                            console.log(titleSortDir);
+                            if(titleSortDir === null) return 0;
+
+                            // ignore upper and lowercase
+                            var titleA = a.title.toUpperCase();
+                            var titleB = b.title.toUpperCase();
+
+                            if (titleA < titleB)
+                                return titleSortDir === "asc" ? -1 : 1;
+                            if (titleA > titleB)
+                                return titleSortDir === "asc" ? 1 : -1;
+                            return 0;
+                        })
+                        .map((o) => (
+                            <tr className="font-bold" key={o.id}>
+                                {done === "to-do" && (
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            onChange={() => handleCheck(o.id)}
+                                        />
+                                    </td>
+                                )}
+                                <td className="py-8">{o.title}</td>
                                 <td>
-                                    <input type="checkbox" onChange={() => handleCheck(o.id)} />
-                                </td>
-                            )}
-                            <td className="py-8">{o.title}</td>
-                            <td>
-                                <span
-                                    className={`text-white rounded-full px-4 py-2 ${
-                                        o.status === TodoStatus.Done
-                                            ? "bg-green-600"
-                                            : o.status === TodoStatus.InProgress
-                                            ? "bg-blue-600"
-                                            : "bg-yellow-500"
-                                    }`}
-                                >
-                                    {o.status}
-                                </span>
-                            </td>
-                            <td>{`${o.date.getDate()} ${
-                                months[o.date.getMonth()]
-                            } ${o.date.getFullYear()}`}</td>
-                            <td>{getTime(o.date)}</td>
-                            <td>
-                                <div className="flex items-center">
-                                    <a className="text-blue-500" href="/">
-                                        <svg
-                                            fill="currentColor"
-                                            className="w-4 h-4 currentColor"
-                                            viewBox="0 0 20.517 20.517"
-                                        >
-                                            <path
-                                                d="M19.976,5.767,18.128,7.614a.481.481,0,0,1-.681,0L13,3.166a.481.481,0,0,1,0-.681L14.846.637a1.928,1.928,0,0,1,2.721,0l2.408,2.408A1.92,1.92,0,0,1,19.976,5.767Zm-8.564-1.7L.888,14.595l-.85,4.869a.963.963,0,0,0,1.114,1.114l4.869-.854L16.545,9.2a.481.481,0,0,0,0-.681L12.1,4.071a.486.486,0,0,0-.685,0ZM3.549,17.064H5.473v1.455l-2.585.453L1.642,17.725l.453-2.585H3.549Z"
-                                                transform="translate(-0.024 -0.075)"
-                                            />
-                                        </svg>
-                                    </a>
-                                    <button
-                                        className="ml-3 text-red-500"
-                                        onClick={() => handleRemove(o.id)}
+                                    <span
+                                        className={`text-white rounded-full px-4 py-2 ${
+                                            o.status === TodoStatus.Done
+                                                ? "bg-green-600"
+                                                : o.status ===
+                                                  TodoStatus.InProgress
+                                                ? "bg-blue-600"
+                                                : "bg-yellow-500"
+                                        }`}
                                     >
-                                        <svg
-                                            fill="currentColor"
-                                            className="w-8 h-8 currentColor"
-                                            viewBox="0 0 24 24"
+                                        {o.status}
+                                    </span>
+                                </td>
+                                <td>{`${o.date.getDate()} ${
+                                    months[o.date.getMonth()]
+                                } ${o.date.getFullYear()}`}</td>
+                                <td>{getTime(o.date)}</td>
+                                <td>
+                                    <div className="flex items-center">
+                                        <a className="text-blue-500" href="/">
+                                            <svg
+                                                fill="currentColor"
+                                                className="w-4 h-4 currentColor"
+                                                viewBox="0 0 20.517 20.517"
+                                            >
+                                                <path
+                                                    d="M19.976,5.767,18.128,7.614a.481.481,0,0,1-.681,0L13,3.166a.481.481,0,0,1,0-.681L14.846.637a1.928,1.928,0,0,1,2.721,0l2.408,2.408A1.92,1.92,0,0,1,19.976,5.767Zm-8.564-1.7L.888,14.595l-.85,4.869a.963.963,0,0,0,1.114,1.114l4.869-.854L16.545,9.2a.481.481,0,0,0,0-.681L12.1,4.071a.486.486,0,0,0-.685,0ZM3.549,17.064H5.473v1.455l-2.585.453L1.642,17.725l.453-2.585H3.549Z"
+                                                    transform="translate(-0.024 -0.075)"
+                                                />
+                                            </svg>
+                                        </a>
+                                        <button
+                                            className="ml-3 text-red-500"
+                                            onClick={() => handleRemove(o.id)}
                                         >
-                                            <path d="M16.192 6.344L11.949 10.586 7.707 6.344 6.293 7.758 10.535 12 6.293 16.242 7.707 17.656 11.949 13.414 16.192 17.656 17.606 16.242 13.364 12 17.606 7.758z" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
+                                            <svg
+                                                fill="currentColor"
+                                                className="w-8 h-8 currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path d="M16.192 6.344L11.949 10.586 7.707 6.344 6.293 7.758 10.535 12 6.293 16.242 7.707 17.656 11.949 13.414 16.192 17.656 17.606 16.242 13.364 12 17.606 7.758z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
                 </tbody>
             </table>
         </div>
