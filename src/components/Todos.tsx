@@ -1,8 +1,8 @@
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { State } from "./redux";
-import { TodoStatus } from "./Todo";
+import { State } from "../redux";
+import { TodoStatus } from "../Todo";
 import { getWeek } from "date-fns";
 
 const months = [
@@ -70,13 +70,13 @@ function Todos() {
 
     return (
         <div className="relative text-sm">
-            <a
-                href="/todos/add"
+            <Link
                 className="absolute top-0 right-0 flex items-center block px-3 py-0.5 text-gray-200 bg-blue-500 rounded"
+                to="/todo"
             >
                 <span className="mr-3 text-3xl">+</span>
                 Add Task
-            </a>
+            </Link>
 
             <div className="flex pt-6 text-xs border-b">
                 <Link

@@ -1,14 +1,22 @@
 import { v4 } from "uuid";
 
-export default class Todo
-{
+export default class Todo {
     id: string;
     constructor(
         public title: string,
         public date: Date,
-        public status: TodoStatus) {
+        public status: TodoStatus
+    ) {
         this.id = v4();
     }
+}
+
+export class PlainTodo {
+    constructor(
+        public title: string,
+        public date: number,
+        public status: TodoStatus
+    ) {}
 }
 
 export enum TodoStatus {
