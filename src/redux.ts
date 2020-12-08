@@ -27,7 +27,7 @@ export const store = createStore(
     window.devToolsExtension && window.devToolsExtension()
 );
 
-export type ActionType = "TodoAdd" | "TodoRemove";
+export type ActionType = "TodoAdd" | "TodoRemove" | "TodoDone";
 
 export class Action {
     constructor(public type: ActionType, public payload: any) {}
@@ -44,6 +44,15 @@ function reducer(state = initialState, { type, payload }: Action) {
             return {
                 ...state,
                 todos: state.todos.filter((o) => o.id !== payload),
+            };
+        case "TodoDone":
+            return {
+                ...state,
+                todos: state.todos.map((o) => {
+                    if (o.id !== payload) return o;
+                    o.status = TodoStatus.Done;
+                    return o;
+                }),
             };
         default:
             return state;

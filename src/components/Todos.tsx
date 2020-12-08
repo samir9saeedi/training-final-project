@@ -47,6 +47,11 @@ function Todos() {
         dispatch(action);
     }
 
+    function handleCheck(id: string) {
+        const action = { ...new Action("TodoDone", id) };
+        dispatch(action);
+    }
+
     const now = new Date();
     switch (range) {
         case "day":
@@ -135,8 +140,8 @@ function Todos() {
             <table className="w-full mt-10">
                 <thead className="text-left text-gray-500">
                     <tr className="border-t border-b">
-                        <th className="py-4">&nbsp;</th>
-                        <th>Tasks</th>
+                        {done === "to-do" && <th>&nbsp;</th>}
+                        <th className="py-4">Tasks</th>
                         <th>Status</th>
                         <th>Date</th>
                         <th>Time</th>
@@ -146,10 +151,12 @@ function Todos() {
                 <tbody>
                     {todos.map((o) => (
                         <tr className="font-bold" key={o.id}>
-                            <td className="py-8">
-                                <input type="checkbox" />
-                            </td>
-                            <td>{o.title}</td>
+                            {done === "to-do" && (
+                                <td>
+                                    <input type="checkbox" onChange={() => handleCheck(o.id)} />
+                                </td>
+                            )}
+                            <td className="py-8">{o.title}</td>
                             <td>
                                 <span
                                     className={`text-white rounded-full px-4 py-2 ${
