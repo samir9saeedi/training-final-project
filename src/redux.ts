@@ -1,13 +1,13 @@
 import { createStore } from "redux";
 import Todo, { TodoStatus } from "./Todo";
 
-export type State = { todos: Array<Todo> };
+export type State = { todos: Array<Todo>, titleSortDir: string | null };
 
 const initialState: State = {
     todos: [
         new Todo("Task #1", new Date(2020, 11, 21, 9, 30), TodoStatus.Paused),
         new Todo(
-            "Task #2",
+            "Task #5",
             new Date(2020, 11, 9, 11, 0),
             TodoStatus.InProgress
         ),
@@ -18,6 +18,7 @@ const initialState: State = {
         ),
         new Todo("Task #4", new Date(2020, 11, 9, 19, 30), TodoStatus.Done),
     ],
+    titleSortDir: null,
 };
 
 export const store = createStore(
@@ -27,10 +28,10 @@ export const store = createStore(
     window.devToolsExtension && window.devToolsExtension()
 );
 
-export type ActionType = "TodoAdd" | "TodoRemove" | "TodoDone";
+export type ActionType = "TodoAdd" | "TodoRemove" | "TodoDone" | "ToggleTitleSortDir";
 
 export class Action {
-    constructor(public type: ActionType, public payload: any) {}
+    constructor(public type: ActionType, public payload?: any) {}
 }
 
 function reducer(state = initialState, { type, payload }: Action) {
@@ -54,6 +55,11 @@ function reducer(state = initialState, { type, payload }: Action) {
                     return o;
                 }),
             };
+        case "ToggleTitleSortDir":
+            return {
+                ...state,
+                titleSortDir: (state.titleSortDir === null || state.titleSortDir === "desc") ? "asc" : "desc",
+            }
         default:
             return state;
     }
