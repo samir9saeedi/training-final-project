@@ -5,9 +5,10 @@ export type State = { todos: Array<Todo> };
 
 const initialState : State = {
     todos: [
-        new Todo("Task #1", new Date(2020, 9, 21, 9, 30), TodoStatus.Paused),
-        new Todo("Task #2", new Date(2020, 9, 21, 11, 0), TodoStatus.InProgress),
-        new Todo("Task #3", new Date(2020, 9, 21, 17, 30), TodoStatus.InProgress),
+        new Todo("Task #1", new Date(2020, 11, 21, 9, 30), TodoStatus.Paused),
+        new Todo("Task #2", new Date(2020, 11, 9, 11, 0), TodoStatus.InProgress),
+        new Todo("Task #3", new Date(2020, 11, 8, 17, 30), TodoStatus.InProgress),
+        new Todo("Task #4", new Date(2020, 11, 9, 19, 30), TodoStatus.Done),
     ]
 }
 

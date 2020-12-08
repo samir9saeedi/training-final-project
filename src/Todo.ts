@@ -14,4 +14,5 @@ export default class Todo
 export enum TodoStatus {
     Paused = "Paused",
     InProgress = "In Progress",
+    Done = "Done",
 }

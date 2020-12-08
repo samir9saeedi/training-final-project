@@ -1,6 +1,9 @@
+import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { State } from "./redux";
 import { TodoStatus } from "./Todo";
+import { getWeek } from "date-fns";
 
 const months = [
     "January",
@@ -27,7 +30,43 @@ function getTime(date: Date) {
 }
 
 function Todos() {
-    const todos = useSelector((state: State) => state.todos);
+    let todos = useSelector((state: State) => state.todos);
+    const { done, range } = useParams<{
+        done: "to-do" | "done-tasks";
+        range: "month" | "week" | "day";
+    }>();
+    todos = todos.filter((o) =>
+        done === "done-tasks"
+            ? o.status === TodoStatus.Done
+            : o.status !== TodoStatus.Done
+    );
+
+    const now = new Date();
+    switch (range) {
+        case "day":
+            todos = todos.filter(
+                (o) =>
+                    o.date.getFullYear() === now.getFullYear() &&
+                    o.date.getMonth() === now.getMonth() &&
+                    o.date.getDate() === now.getDate()
+            );
+            break;
+        case "week":
+            const currentWeek = getWeek(now, { weekStartsOn: 1 });
+            todos = todos.filter(
+                (o) =>
+                    getWeek(o.date, { weekStartsOn: 1 }) ===
+                    currentWeek
+            );
+            break;
+        case "month":
+            todos = todos.filter(
+                (o) =>
+                    o.date.getFullYear() === now.getFullYear() &&
+                    o.date.getMonth() === now.getMonth()
+            );
+            break;
+    }
 
     return (
         <div className="relative text-sm">
@@ -40,30 +79,53 @@ function Todos() {
             </a>
 
             <div className="flex pt-6 text-xs border-b">
-                <a
-                    className="relative flex items-center justify-center w-32 h-10 py-2 font-bold text-center text-blue-600 bg-white border border-b-0 rounded-t top-px"
-                    href="/todos?done=false"
+                <Link
+                    className={`relative flex items-center justify-center w-32 h-10 py-2 text-center border rounded-t top-px ${
+                        done === "to-do"
+                            ? "border-b-0 text-blue-600 bg-white font-bold"
+                            : "text-gray-400 bg-gray-100"
+                    }`}
+                    to={`/todos/to-do/${range}`}
                 >
                     To Do
-                </a>
-                <a
-                    className="relative flex items-center justify-center w-32 h-10 py-2 ml-1 text-center text-gray-400 bg-gray-100 border rounded-t top-px"
-                    href="/todos?done=true"
+                </Link>
+                <Link
+                    className={`relative flex items-center justify-center w-32 h-10 py-2 ml-1 text-center border rounded-t top-px ${
+                        done === "done-tasks"
+                            ? "border-b-0 text-blue-600 bg-white font-bold"
+                            : "text-gray-400 bg-gray-100"
+                    }`}
+                    to={`/todos/done-tasks/${range}`}
                 >
                     Done Tasks
-                </a>
+                </Link>
             </div>
 
             <div className="flex justify-end mt-8 text-xs">
-                <button className="px-5 py-2 text-gray-700 border rounded-l box-content">
+                <Link
+                    className={`px-5 py-2 border rounded-l box-content ${
+                        range === "month" ? "text-blue-600" : "text-gray-700"
+                    }`}
+                    to={`/todos/${done}/month`}
+                >
                     Month
-                </button>
-                <button className="px-5 py-2 text-gray-700 border-t border-b box-content">
+                </Link>
+                <Link
+                    className={`px-5 py-2 border-t border-b box-content ${
+                        range === "week" ? "text-blue-600" : "text-gray-700"
+                    }`}
+                    to={`/todos/${done}/week`}
+                >
                     Week
-                </button>
-                <button className="px-5 py-2 text-blue-600 border rounded-r box-content">
+                </Link>
+                <Link
+                    className={`px-5 py-2 border rounded-r box-content ${
+                        range === "day" ? "text-blue-600" : "text-gray-700"
+                    }`}
+                    to={`/todos/${done}/day`}
+                >
                     Day
-                </button>
+                </Link>
             </div>
 
             <table className="w-full mt-10">
@@ -87,7 +149,9 @@ function Todos() {
                             <td>
                                 <span
                                     className={`text-white rounded-full px-4 py-2 ${
-                                        o.status === TodoStatus.InProgress
+                                        o.status === TodoStatus.Done
+                                            ? "bg-green-600"
+                                            : o.status === TodoStatus.InProgress
                                             ? "bg-blue-600"
                                             : "bg-yellow-500"
                                     }`}
@@ -105,7 +169,13 @@ function Todos() {
                                         <svg
                                             fill="currentColor"
                                             className="w-4 h-4 currentColor"
-                                            viewBox="0 0 20.517 20.517"><path d="M19.976,5.767,18.128,7.614a.481.481,0,0,1-.681,0L13,3.166a.481.481,0,0,1,0-.681L14.846.637a1.928,1.928,0,0,1,2.721,0l2.408,2.408A1.92,1.92,0,0,1,19.976,5.767Zm-8.564-1.7L.888,14.595l-.85,4.869a.963.963,0,0,0,1.114,1.114l4.869-.854L16.545,9.2a.481.481,0,0,0,0-.681L12.1,4.071a.486.486,0,0,0-.685,0ZM3.549,17.064H5.473v1.455l-2.585.453L1.642,17.725l.453-2.585H3.549Z" transform="translate(-0.024 -0.075)"/></svg>
+                                            viewBox="0 0 20.517 20.517"
+                                        >
+                                            <path
+                                                d="M19.976,5.767,18.128,7.614a.481.481,0,0,1-.681,0L13,3.166a.481.481,0,0,1,0-.681L14.846.637a1.928,1.928,0,0,1,2.721,0l2.408,2.408A1.92,1.92,0,0,1,19.976,5.767Zm-8.564-1.7L.888,14.595l-.85,4.869a.963.963,0,0,0,1.114,1.114l4.869-.854L16.545,9.2a.481.481,0,0,0,0-.681L12.1,4.071a.486.486,0,0,0-.685,0ZM3.549,17.064H5.473v1.455l-2.585.453L1.642,17.725l.453-2.585H3.549Z"
+                                                transform="translate(-0.024 -0.075)"
+                                            />
+                                        </svg>
                                     </a>
                                     <a className="ml-3 text-red-500" href="/">
                                         <svg
