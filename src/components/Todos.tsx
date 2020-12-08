@@ -1,8 +1,8 @@
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { State } from "./redux";
-import { TodoStatus } from "./Todo";
+import { State } from "../redux";
+import { TodoStatus } from "../Todo";
 import { getWeek } from "date-fns";
 
 const months = [
