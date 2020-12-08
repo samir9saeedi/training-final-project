@@ -1,4 +1,4 @@
-import uuid from "uuid";
+import { v4 } from "uuid";
 
 export default class Todo
 {
@@ -7,7 +7,7 @@ export default class Todo
         public title: string,
         public date: Date,
         public status: TodoStatus) {
-        this.id = uuid.v4();
+        this.id = v4();
     }
 }
 

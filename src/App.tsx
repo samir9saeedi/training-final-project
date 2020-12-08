@@ -1,11 +1,10 @@
 import React from "react";
+import Todos from "./Todos";
 
 function App() {
     return (
-        <div>
-            <header className="text-2xl">
-                <p>Hello World</p>
-            </header>
+        <div className="p-8">
+            <Todos />
         </div>
     );
 }
