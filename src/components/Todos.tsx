@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { State } from "../redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Action, State } from "../redux";
 import { TodoStatus } from "../Todo";
 import { getWeek } from "date-fns";
 
@@ -31,6 +31,7 @@ function getTime(date: Date) {
 
 function Todos() {
     let todos = useSelector((state: State) => state.todos);
+    const dispatch = useDispatch();
     const { done, range } = useParams<{
         done: "to-do" | "done-tasks";
         range: "month" | "week" | "day";
@@ -40,6 +41,11 @@ function Todos() {
             ? o.status === TodoStatus.Done
             : o.status !== TodoStatus.Done
     );
+
+    function handleRemove(id: string) {
+        const action = { ...new Action("TodoRemove", id) };
+        dispatch(action);
+    }
 
     const now = new Date();
     switch (range) {
@@ -54,9 +60,7 @@ function Todos() {
         case "week":
             const currentWeek = getWeek(now, { weekStartsOn: 1 });
             todos = todos.filter(
-                (o) =>
-                    getWeek(o.date, { weekStartsOn: 1 }) ===
-                    currentWeek
+                (o) => getWeek(o.date, { weekStartsOn: 1 }) === currentWeek
             );
             break;
         case "month":
@@ -177,7 +181,10 @@ function Todos() {
                                             />
                                         </svg>
                                     </a>
-                                    <a className="ml-3 text-red-500" href="/">
+                                    <button
+                                        className="ml-3 text-red-500"
+                                        onClick={() => handleRemove(o.id)}
+                                    >
                                         <svg
                                             fill="currentColor"
                                             className="w-8 h-8 currentColor"
@@ -185,7 +192,7 @@ function Todos() {
                                         >
                                             <path d="M16.192 6.344L11.949 10.586 7.707 6.344 6.293 7.758 10.535 12 6.293 16.242 7.707 17.656 11.949 13.414 16.192 17.656 17.606 16.242 13.364 12 17.606 7.758z" />
                                         </svg>
-                                    </a>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
