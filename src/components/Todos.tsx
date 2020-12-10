@@ -97,7 +97,7 @@ function Todos() {
                 <Link
                     className={`relative flex items-center justify-center w-32 h-10 py-2 text-center border rounded-t top-px ${
                         done === "to-do"
-                            ? "border-b-0 text-blue-600 bg-white font-bold"
+                            ? "border-b-0 text-blue-600 bg-white"
                             : "text-gray-400 bg-gray-100"
                     }`}
                     to={`/todos/to-do/${range}`}
@@ -107,7 +107,7 @@ function Todos() {
                 <Link
                     className={`relative flex items-center justify-center w-32 h-10 py-2 ml-1 text-center border rounded-t top-px ${
                         done === "done-tasks"
-                            ? "border-b-0 text-blue-600 bg-white font-bold"
+                            ? "border-b-0 text-blue-600 bg-white"
                             : "text-gray-400 bg-gray-100"
                     }`}
                     to={`/todos/done-tasks/${range}`}
@@ -149,7 +149,6 @@ function Todos() {
                         {done === "to-do" && <th>&nbsp;</th>}
                         <th className="py-4">
                             <button
-                                className="font-bold"
                                 onClick={handleTitleSort}
                             >
                                 Tasks
@@ -164,7 +163,6 @@ function Todos() {
                 <tbody>
                     {todos
                         .sort(function (a, b) {
-                            console.log(titleSortDir);
                             if(titleSortDir === null) return 0;
 
                             // ignore upper and lowercase
@@ -178,7 +176,9 @@ function Todos() {
                             return 0;
                         })
                         .map((o) => (
-                            <tr className="font-bold" key={o.id}>
+                            <tr key={o.id}
+                                className="border-b"
+                            >
                                 {done === "to-do" && (
                                     <td>
                                         <input
@@ -187,7 +187,7 @@ function Todos() {
                                         />
                                     </td>
                                 )}
-                                <td className="py-8">{o.title}</td>
+                                <td className="py-12">{o.title}</td>
                                 <td>
                                     <span
                                         className={`text-white rounded-full px-4 py-2 ${
@@ -195,7 +195,7 @@ function Todos() {
                                                 ? "bg-green-600"
                                                 : o.status ===
                                                   TodoStatus.InProgress
-                                                ? "bg-blue-600"
+                                                ? "bg-ivy"
                                                 : "bg-yellow-500"
                                         }`}
                                     >
@@ -208,7 +208,7 @@ function Todos() {
                                 <td>{getTime(o.date)}</td>
                                 <td>
                                     <div className="flex items-center">
-                                        <a className="text-blue-500" href="/">
+                                        <button className="text-blue-500">
                                             <svg
                                                 fill="currentColor"
                                                 className="w-4 h-4 currentColor"
@@ -219,7 +219,7 @@ function Todos() {
                                                     transform="translate(-0.024 -0.075)"
                                                 />
                                             </svg>
-                                        </a>
+                                        </button>
                                         <button
                                             className="ml-3 text-red-500"
                                             onClick={() => handleRemove(o.id)}
