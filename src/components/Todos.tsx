@@ -4,30 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Action, State } from "../redux";
 import { TodoStatus } from "../Todo";
 import { getWeek } from "date-fns";
-
-const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-];
-
-function getTime(date: Date) {
-    let hours: any = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    const suffix = hours < 12 ? "am" : "pm";
-    hours = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
-    hours = hours.toString().padStart(2, "0");
-    return `${hours}:${minutes} ${suffix}`;
-}
+import { months, getTime } from "../helpers";
 
 function Todos() {
     let todos = useSelector((state: State) => state.todos);
