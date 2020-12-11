@@ -1,8 +1,9 @@
-import {FormEvent} from "react";
-import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
-import {Action} from "../redux";
+import { FormEvent } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { Action } from "../redux";
 import TodoEntity, { TodoStatus } from "../Todo";
+import DatePicker from "./DatePicker";
 
 function Todo() {
     const dispatch = useDispatch();
@@ -10,8 +11,13 @@ function Todo() {
 
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
-        const { title, status, date, time } = (e.target as HTMLFormElement).elements as any;
-        const todo = new TodoEntity(title.value, new Date(`${date.value} ${time.value}`), status.value);
+        const { title, status, date, time } = (e.target as HTMLFormElement)
+            .elements as any;
+        const todo = new TodoEntity(
+            title.value,
+            new Date(`${date.value} ${time.value}`),
+            status.value
+        );
         const action = { ...new Action("TodoAdd", todo) };
         dispatch(action);
         history.push("/todos/to-do/month");
@@ -34,7 +40,9 @@ function Todo() {
                 <label htmlFor="status">Status</label>
                 <select id="status" className="p-1 mt-2 mb-6 border rounded">
                     {Object.values(TodoStatus).map((o) => (
-                        <option key={o} value={o}>{o}</option>
+                        <option key={o} value={o}>
+                            {o}
+                        </option>
                     ))}
                 </select>
 
@@ -51,6 +59,11 @@ function Todo() {
                     id="time"
                     className="p-1 mt-2 mb-6 border rounded"
                 />
+
+                <DatePicker
+                    value={new Date()}
+                    handleChange={() => {}}
+                ></DatePicker>
 
                 <button
                     className="p-1 text-white bg-green-600 border rounded"
