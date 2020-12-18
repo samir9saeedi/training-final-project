@@ -11,14 +11,6 @@ export default class Todo {
     }
 }
 
-export class PlainTodo {
-    constructor(
-        public title: string,
-        public date: number,
-        public status: TodoStatus
-    ) {}
-}
-
 export enum TodoStatus {
     Paused = "Paused",
     InProgress = "In Progress",
