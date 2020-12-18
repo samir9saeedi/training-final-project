@@ -58,7 +58,7 @@ function DatePicker({
                 {value.toLocaleDateString()}
             </div>
             <div
-                className="absolute p-6 bg-white border"
+                className="absolute p-6 bg-white border w-96"
                 tabIndex={-1}
                 ref={pickerRef}
                 hidden={!pickerShown}

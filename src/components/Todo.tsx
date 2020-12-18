@@ -1,4 +1,4 @@
-import {setDate, setHours, setMinutes, setMonth, setYear} from "date-fns";
+import { setDate, setHours, setMinutes, setMonth, setYear } from "date-fns";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -9,7 +9,7 @@ import DatePicker from "./DatePicker";
 function Todo() {
     const dispatch = useDispatch();
     const history = useHistory();
-    const todo = new TodoEntity("Todo", new Date(), TodoStatus.InProgress);
+    const todo = new TodoEntity("", new Date(), TodoStatus.InProgress);
     const [model, setModel] = useState(todo);
 
     function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -24,16 +24,21 @@ function Todo() {
     }
 
     function handleDateChange(e: Date) {
-        const date = setYear(setMonth(setDate(model.date, e.getDate()), e.getMonth()), e.getFullYear());
+        const date = setYear(
+            setMonth(setDate(model.date, e.getDate()), e.getMonth()),
+            e.getFullYear()
+        );
         setModel({ ...model, date });
     }
 
     function handleTimeChange(e: ChangeEvent<HTMLInputElement>) {
         const timeParts = e.target.value.split(":");
-        const date = setHours(setMinutes(model.date, Number(timeParts[1] || "")), Number(timeParts[0]));
-        setModel({ ...model, date});
+        const date = setHours(
+            setMinutes(model.date, Number(timeParts[1] || "")),
+            Number(timeParts[0])
+        );
+        setModel({ ...model, date });
     }
-
 
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
@@ -43,59 +48,80 @@ function Todo() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="border rounded">
-            <fieldset className="relative flex flex-col p-6 w-36">
-                <legend className="absolute px-2 text-2xl bg-white -top-4">
-                    Todo
-                </legend>
+        <form onSubmit={handleSubmit}>
+            <fieldset className="relative gap-12 grid sm:grid-cols-2 md:grid-cols-4">
+                <legend className="mb-8 text-2xl">Todo</legend>
 
-                <label htmlFor="title">Title</label>
-                <input
-                    type="text"
-                    id="title"
-                    className="p-1 mt-2 mb-6 border rounded"
-                    value={model.title}
-                    onChange={handleTitleChange}
-                />
+                <div className="flex flex-col">
+                    <label htmlFor="title">Title</label>
 
-                <label htmlFor="status">Status</label>
-                <select
-                    value={model.status}
-                    onChange={handleStatusChange}
-                    id="status"
-                    className="p-1 mt-2 mb-6 border rounded"
-                >
-                    {Object.values(TodoStatus).map((o) => (
-                        <option key={o} value={o}>
-                            {o}
-                        </option>
-                    ))}
-                </select>
+                    <input
+                        type="text"
+                        id="title"
+                        className="p-1 mt-2 border rounded"
+                        value={model.title}
+                        onChange={handleTitleChange}
+                        autoFocus
+                        required
+                    />
+                </div>
 
-                <label htmlFor="date">Date</label>
-                <DatePicker
-                    className="p-1 mt-2 mb-6 border rounded"
-                    value={model.date}
-                    handleChange={handleDateChange}
-                ></DatePicker>
+                <div className="flex flex-col">
+                    <label htmlFor="status">Status</label>
 
-                <label htmlFor="time">Time</label>
-                <input
-                    type="time"
-                    id="time"
-                    value={`${model.date.getHours().toString().padStart(2, "0")}:${model.date.getMinutes().toString().padStart(2, "0")}`}
-                    onChange={handleTimeChange}
-                    required
-                    className="p-1 mt-2 mb-6 border rounded"
-                />
+                    <select
+                        value={model.status}
+                        onChange={handleStatusChange}
+                        id="status"
+                        className="p-1 mt-2 border rounded"
+                    >
+                        {Object.values(TodoStatus).map((o) => (
+                            <option key={o} value={o}>
+                                {o}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
-                <button
-                    className="p-1 text-white bg-green-600 border rounded"
-                    type="submit"
-                >
-                    Save
-                </button>
+                <div className="flex flex-col">
+                    <label htmlFor="date">Date</label>
+
+                    <DatePicker
+                        className="p-1 mt-2 border rounded"
+                        value={model.date}
+                        handleChange={handleDateChange}
+                    ></DatePicker>
+                </div>
+
+                <div className="flex flex-col">
+                    <label htmlFor="time">Time</label>
+
+                    <input
+                        type="time"
+                        id="time"
+                        value={`${model.date
+                            .getHours()
+                            .toString()
+                            .padStart(
+                                2,
+                                "0"
+                            )}:${model.date
+                            .getMinutes()
+                            .toString()
+                            .padStart(2, "0")}`}
+                        onChange={handleTimeChange}
+                        required
+                        className="p-1 mt-2 border rounded"
+                    />
+                </div>
             </fieldset>
+
+            <button
+                className="w-24 p-2 mt-8 text-white bg-green-600 border rounded"
+                type="submit"
+            >
+                Save
+            </button>
         </form>
     );
 }
