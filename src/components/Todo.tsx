@@ -23,7 +23,7 @@ function Todo() {
     function handleStatusChange(e: ChangeEvent<HTMLSelectElement>) {
         setModel({
             ...model,
-            status: TodoStatus[e.target.value as keyof typeof TodoStatus],
+            status: e.target.value as TodoStatus,
         });
     }
 
