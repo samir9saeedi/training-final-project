@@ -1,15 +1,19 @@
 import { setDate, setHours, setMinutes, setMonth, setYear } from "date-fns";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { Action } from "../redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory, useParams } from "react-router-dom";
+import { Action, State } from "../redux";
 import TodoEntity, { TodoStatus } from "../Todo";
 import DatePicker from "./DatePicker";
 
 function Todo() {
     const dispatch = useDispatch();
     const history = useHistory();
-    const todo = new TodoEntity("", new Date(), TodoStatus.InProgress);
+    const { id } = useParams<{ id?: string }>();
+    const todos = useSelector((state: State) => state.todos);
+    const todo =
+        (id && todos.find((o) => o.id === id)) ||
+        new TodoEntity("", new Date(), TodoStatus.InProgress);
     const [model, setModel] = useState(todo);
 
     function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -19,7 +23,7 @@ function Todo() {
     function handleStatusChange(e: ChangeEvent<HTMLSelectElement>) {
         setModel({
             ...model,
-            status: TodoStatus[e.target.value as keyof typeof TodoStatus],
+            status: e.target.value as TodoStatus,
         });
     }
 
@@ -42,7 +46,7 @@ function Todo() {
 
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
-        const action = { ...new Action("TodoAdd", model) };
+        const action = { ...new Action(model.id === id ? "TodoEdit": "TodoAdd", model) };
         dispatch(action);
         history.push("/todos/to-do/month");
     }
