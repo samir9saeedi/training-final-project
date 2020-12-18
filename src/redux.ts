@@ -28,7 +28,7 @@ export const store = createStore(
     window.devToolsExtension && window.devToolsExtension()
 );
 
-export type ActionType = "TodoAdd" | "TodoRemove" | "TodoDone" | "ToggleTitleSortDir";
+export type ActionType = "TodoAdd" | "TodoEdit" | "TodoRemove" | "TodoDone" | "ToggleTitleSortDir";
 
 export class Action {
     constructor(public type: ActionType, public payload?: any) {}
@@ -40,6 +40,11 @@ function reducer(state = initialState, { type, payload }: Action) {
             return {
                 ...state,
                 todos: [...state.todos, payload],
+            };
+        case "TodoEdit":
+            return {
+                ...state,
+                todos: [...state.todos.filter((o) => o.id !== payload.id), payload],
             };
         case "TodoRemove":
             return {

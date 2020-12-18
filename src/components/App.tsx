@@ -8,7 +8,7 @@ function App() {
             <div className="p-8">
                 <Switch>
                     <Route exact path="/todos/:done/:range" component={Todos}/>
-                    <Route exact path="/todo" component={Todo}/>
+                    <Route exact path="/todo/:id?" component={Todo}/>
                 </Switch>
             </div>
         </Router>

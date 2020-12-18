@@ -125,11 +125,7 @@ function Todos() {
                     <tr className="border-t border-b">
                         {done === "to-do" && <th>&nbsp;</th>}
                         <th className="py-4">
-                            <button
-                                onClick={handleTitleSort}
-                            >
-                                Tasks
-                            </button>
+                            <button onClick={handleTitleSort}>Tasks</button>
                         </th>
                         <th>Status</th>
                         <th>Date</th>
@@ -140,7 +136,7 @@ function Todos() {
                 <tbody>
                     {todos
                         .sort(function (a, b) {
-                            if(titleSortDir === null) return 0;
+                            if (titleSortDir === null) return 0;
 
                             // ignore upper and lowercase
                             var titleA = a.title.toUpperCase();
@@ -153,9 +149,7 @@ function Todos() {
                             return 0;
                         })
                         .map((o) => (
-                            <tr key={o.id}
-                                className="border-b"
-                            >
+                            <tr key={o.id} className="border-b">
                                 {done === "to-do" && (
                                     <td>
                                         <input
@@ -185,7 +179,10 @@ function Todos() {
                                 <td>{getTime(o.date)}</td>
                                 <td>
                                     <div className="flex items-center">
-                                        <button className="text-blue-500">
+                                        <Link
+                                            to={`/todo/${o.id}`}
+                                            className="text-blue-500"
+                                        >
                                             <svg
                                                 fill="currentColor"
                                                 className="w-4 h-4 currentColor"
@@ -196,7 +193,7 @@ function Todos() {
                                                     transform="translate(-0.024 -0.075)"
                                                 />
                                             </svg>
-                                        </button>
+                                        </Link>
                                         <button
                                             className="ml-3 text-red-500"
                                             onClick={() => handleRemove(o.id)}
