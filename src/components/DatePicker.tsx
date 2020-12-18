@@ -1,6 +1,6 @@
 import { months, weekDaysInitials } from "../helpers";
 import { addDays, addMonths, startOfMonth, endOfMonth } from "date-fns";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 function DatePicker({
     value,
@@ -11,6 +11,7 @@ function DatePicker({
     handleChange: Function;
     className: string;
 }) {
+    const pickerRef = useRef<HTMLDivElement>(null);
     const [pickerShown, setPickerShown] = useState(false);
     const [start, setStart] = useState(startOfMonth(value));
     const end = endOfMonth(start);
@@ -38,12 +39,31 @@ function DatePicker({
 
     function handleInputClick() {
         setPickerShown(true);
+        setTimeout(() => {
+            pickerRef.current!.focus();
+        });
+    }
+
+    function handlePickerBlur() {
+        setTimeout(()=>{
+            if (!pickerRef.current!.contains(document.activeElement)) {
+                setPickerShown(false);
+            }
+        });
     }
 
     return (
-        <>
-            <span onClick={handleInputClick} className={className}>{value.toLocaleDateString()}</span>
-            <div className="p-6 border">
+        <div className="relative">
+            <div onClick={handleInputClick} className={className}>
+                {value.toLocaleDateString()}
+            </div>
+            <div
+                className="absolute p-6 bg-white border"
+                tabIndex={-1}
+                ref={pickerRef}
+                hidden={!pickerShown}
+                onBlur={handlePickerBlur}
+            >
                 <span className="text-gray-500">Date Range Picker</span>
                 <div className="flex justify-between mt-8">
                     <button
@@ -133,7 +153,7 @@ function DatePicker({
                     </tbody>
                 </table>
             </div>
-        </>
+        </div>
     );
 }
 
